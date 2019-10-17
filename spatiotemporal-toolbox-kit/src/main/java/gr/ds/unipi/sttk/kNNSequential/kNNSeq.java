@@ -1,6 +1,6 @@
 package gr.ds.unipi.sttk.kNNSequential;
 
-import gr.ds.unipi.stpin.FilesParse;
+import gr.ds.unipi.sttk.FilesParse;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
 

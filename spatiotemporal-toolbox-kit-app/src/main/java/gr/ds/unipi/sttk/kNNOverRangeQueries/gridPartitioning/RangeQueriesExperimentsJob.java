@@ -6,7 +6,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import gr.ds.unipi.stpin.FilesParse;
+import gr.ds.unipi.sttk.FilesParse;
 import org.bson.Document;
 
 import java.io.*;
