@@ -1,14 +1,14 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.quadTree;
 
-import gr.ds.unipi.stpin.Point;
-import gr.ds.unipi.stpin.QuadTree;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import gr.ds.unipi.qtree.Point;
+import gr.ds.unipi.qtree.QuadTree;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.datasources.FileDatasource;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

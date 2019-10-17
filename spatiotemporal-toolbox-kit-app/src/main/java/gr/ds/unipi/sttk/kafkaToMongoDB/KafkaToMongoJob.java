@@ -1,5 +1,9 @@
 package gr.ds.unipi.sttk.kafkaToMongoDB;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.ConfigValueFactory;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.datasources.KafkaDatasource;
 import gr.ds.unipi.stpin.outputs.MongoOutput;
@@ -7,10 +11,6 @@ import gr.ds.unipi.stpin.outputs.Output;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigRenderOptions;
-import com.typesafe.config.ConfigValueFactory;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static gr.ds.unipi.stpin.kafkaToMongoDB.Consts.*;
+import static gr.ds.unipi.sttk.kafkaToMongoDB.Consts.*;
 
 public class KafkaToMongoJob {
 

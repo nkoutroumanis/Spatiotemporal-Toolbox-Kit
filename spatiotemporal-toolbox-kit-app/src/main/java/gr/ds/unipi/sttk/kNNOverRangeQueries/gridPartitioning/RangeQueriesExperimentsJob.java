@@ -1,12 +1,12 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
 
-import gr.ds.unipi.stpin.FilesParse;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import gr.ds.unipi.stpin.FilesParse;
 import org.bson.Document;
 
 import java.io.*;

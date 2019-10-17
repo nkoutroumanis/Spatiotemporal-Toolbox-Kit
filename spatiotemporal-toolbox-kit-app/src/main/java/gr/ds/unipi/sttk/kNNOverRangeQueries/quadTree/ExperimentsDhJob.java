@@ -1,12 +1,14 @@
-package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
+package gr.ds.unipi.sttk.kNNOverRangeQueries.quadTree;
 
-import gr.ds.unipi.stpin.FilesParse;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import gr.ds.unipi.sttk.FilesParse;
+import gr.ds.unipi.qtree.Point;
+import gr.ds.unipi.qtree.QuadTree;
 import org.bson.Document;
 
 import java.io.*;
@@ -21,17 +23,17 @@ public class ExperimentsDhJob {
 
     public static void main(String args[]) throws IOException {
 
-        if (Integer.valueOf(args[0]) == 0) {
-            doOperations("real", "/home/nikolaos/Documents/thesis-dataset/", "/home/nikolaos/Documents/greek-hist/thesis-dataset/", 200);
-        }
+        //if (Integer.valueOf(args[0]) == 0) {
+            doOperations("real", "/home/nikolaos/Documents/thesis-dataset/", "/home/nikolaos/Documents/quadTrees-distinct/", 200);
+       // }
 
-        if (Integer.valueOf(args[0]) == 1) {
-            doOperations("synthetic1", "/home/nikolaos/Documents/synthetic-dataset1/", "/home/nikolaos/Documents/greek-hist/synthetic-dataset1/", 200);
-        }
-
-        if (Integer.valueOf(args[0]) == 2) {
-            doOperations("synthetic2", "/home/nikolaos/Documents/synthetic-dataset2/", "/home/nikolaos/Documents/greek-hist/synthetic-dataset2/", 200);
-        }
+//        if (Integer.valueOf(args[0]) == 1) {
+//            doOperations("synthetic1", "/home/nikolaos/Documents/synthetic-dataset1/", "/home/nikolaos/Documents/greek-hist/synthetic-dataset1/", 200);
+//        }
+//
+//        if (Integer.valueOf(args[0]) == 2) {
+//            doOperations("synthetic2", "/home/nikolaos/Documents/synthetic-dataset2/", "/home/nikolaos/Documents/greek-hist/synthetic-dataset2/", 200);
+//        }
 
 
     }
@@ -68,11 +70,19 @@ public class ExperimentsDhJob {
 
             System.out.println(path);
 
-            LoadHistogram lh = LoadHistogram.newLoadHistogram(path.toString());
-            RadiusDetermination rd = RadiusDetermination.newRadiusDetermination(lh.getHistogram(), lh.getNumberOfCellsxAxis(), lh.getNumberOfCellsyAxis(), lh.getMinx(), lh.getMiny(), lh.getMaxx(), lh.getMaxy());
+            //LoadHistogram lh = LoadHistogram.newLoadHistogram(path.toString());
+            //RadiusDetermination rd = RadiusDetermination.newRadiusDetermination(lh.getHistogram(), lh.getNumberOfCellsxAxis(), lh.getNumberOfCellsyAxis(), lh.getMinx(), lh.getMiny(), lh.getMaxx(), lh.getMaxy());
 
+            QuadTree quadTree1 = null;
+            try {
+                quadTree1 = QuadTree.deserializeQuadTree(path + File.separator+ "quadTree.bin");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
 
-            Stream.of(1500, 800, 300, 100, 50, 10).forEach(ki -> {
+            QuadTree quadTree = quadTree1;
+
+            Stream.of(800, 300, 100, 50, 10).forEach(ki -> {
 
                 Stream.of(/*0.1, 0.05, 0.01, 0.005, 0.001*/0).forEach(dh -> {
 
@@ -181,7 +191,7 @@ public class ExperimentsDhJob {
                         //System.out.println("Point: " + randomX + "  " + randomY);
 
                         long t1 = System.nanoTime();
-                        double determinedRadius = rd.findRadius(randomX, randomY, Long.valueOf(k));
+                        double determinedRadius = quadTree.determineRadiusOfPoint(k, Point.newPoint(randomX, randomY));
                         timeForRadiusDetermination.add(System.nanoTime() - t1);
                         System.out.println("formed point (" + randomX + ", " + randomY + "), km= " + determinedRadius + ", i=" + i);
 

@@ -1,6 +1,6 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
 
-import gr.ds.unipi.stpin.FilesParse;
+import gr.ds.unipi.sttk.FilesParse;
 
 import java.util.Map;
 
