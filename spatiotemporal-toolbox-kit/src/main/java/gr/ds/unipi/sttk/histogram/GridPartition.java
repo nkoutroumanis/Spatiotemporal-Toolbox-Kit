@@ -25,7 +25,6 @@ public final class GridPartition {
 
     private static final Logger logger = LoggerFactory.getLogger(GridPartition.class);
 
-
     private final Rectangle rectangle;
     private final long cellsInXAxis;
     private final long cellsInYAxis;
