@@ -52,7 +52,7 @@ public class AppConfig {
 
         if(parser.getString("type").equals("csv")){
             Config csv = parser.getConfig("csv");
-                rp = new CsvRecordParser(datasource, csv.getString("separator") ,csv.getString("header"), csv.getInt(""),csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
+                rp = new CsvRecordParser(datasource, csv.getString("separator") ,csv.getString("header"), csv.getInt("numberOfColumnVehicleId"),csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
         }
         else if(parser.getString("type").equals("json")){
             Config json = parser.getConfig("json");

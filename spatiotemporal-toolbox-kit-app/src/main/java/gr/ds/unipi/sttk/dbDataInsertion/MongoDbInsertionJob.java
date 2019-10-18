@@ -21,7 +21,7 @@ public final class MongoDbInsertionJob {
 //        System.out.println("syn2: " + (System.currentTimeMillis() - t3) / 1000);
 
         AppConfig config = AppConfig.newAppConfig(args[0]);
-        config.getMongoDbInsertion(config.getRecordParser(config.getDataSource()));
+        config.getMongoDbInsertion(config.getRecordParser(config.getDataSource())).insertDataOnCollection();
 
     }
 

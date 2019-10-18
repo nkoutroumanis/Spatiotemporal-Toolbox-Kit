@@ -79,7 +79,7 @@ public final class MongoDbDataInsertion {
 //    }
 
 
-    public void insertDataOnCollection(RecordParser parser, String collection) throws IOException {
+    public void insertDataOnCollection() throws IOException {
 
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
@@ -109,7 +109,7 @@ public final class MongoDbDataInsertion {
                 Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
                         .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
                         .withValue("location.coordinates", ConfigValueFactory.fromAnyRef(Arrays.asList(longitude,latitude)))
-                        .withValue("date", ConfigValueFactory.fromAnyRef(d));
+                        .withValue("date", ConfigValueFactory.fromAnyRef(parser.getDate(record)));
 
 
                 mongoOutput.out(Document.parse(config.root().render(ConfigRenderOptions.concise())),"");
@@ -142,16 +142,13 @@ public final class MongoDbDataInsertion {
 //                    mongoCollection.insertMany(docs);
 //                    docs = new ArrayList<>();
 //                }
-
             } catch (ArrayIndexOutOfBoundsException | NumberFormatException | ParseException e) {
                 continue;
             }
-            mongoOutput.close();
-
-            logger.info("Totally {} documents have been inserted in collection of MongoDB ",count);
-            logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
         }
-
+        logger.info("Totally {} documents have been inserted in collection of MongoDB ",count);
+        logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
+        mongoOutput.close();
 //        if (docs.size() != 0) {
 //            mongoCollection.insertMany(docs);
 //            docs = null;
