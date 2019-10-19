@@ -106,13 +106,17 @@ public final class MongoDbDataInsertion {
                     }
                 }
 
-                Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
-                        .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
-                        .withValue("location.coordinates", ConfigValueFactory.fromAnyRef(Arrays.asList(longitude,latitude)))
-                        .withValue("date", ConfigValueFactory.fromAnyRef(parser.getDate(record)));
+//                Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
+//                        .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
+//                        .withValue("location.coordinates", ConfigValueFactory.fromAnyRef(Arrays.asList(longitude,latitude)))
+//                        .withValue("date", ConfigValueFactory.fromAnyRef(parser.getDate(record)));
 
+                Document embeddedDoc = new Document("type", "Point").append("coordinates", Arrays.asList(longitude, latitude));
+                Document doc = new Document("objectId", parser.getVehicle(record)).append("location", embeddedDoc).append("date", d);
 
-                mongoOutput.out(Document.parse(config.root().render(ConfigRenderOptions.concise())),"");
+                mongoOutput.out(doc,"");
+
+//                mongoOutput.out(Document.parse(config.root().render(ConfigRenderOptions.concise())),"");
                 count++;
 
 //                String[] separatedLine = line.split(separator);
