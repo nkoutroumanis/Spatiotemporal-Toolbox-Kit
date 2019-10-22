@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SyntheticDatasetJob2 {
 
-    private static final String path = "/mnt/sbt/synthetic-dataset2/";
+    private static final String path = "/mnt/sdb/synth";
 
     private static final double maxLongitude = 26.6041955909;
     private static final double minLongitude = 20.1500159034;
@@ -23,8 +23,8 @@ public class SyntheticDatasetJob2 {
 
         final SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-        final Date maxDate = sd.parse("2018-06-30 23:59:59.999");
-        final Date minDate = sd.parse("2017-06-29 00:00:00.000");
+        final Date maxDate = sd.parse("2019-11-30 23:59:59.999");
+        final Date minDate = sd.parse("2019-11-16 00:00:00.000");
 
         double lonDiff = maxLongitude - minLongitude;
         double latDiff = maxLatitude - minLatitude;
@@ -33,9 +33,9 @@ public class SyntheticDatasetJob2 {
         PrintWriter pw;
 
 
-            pw = new PrintWriter(path + File.separator + "synthetic" + ".csv");
+            pw = new PrintWriter(path + File.separator + "synthetic18" + ".csv");
 
-            for (int j = 0; j < 3448; j++) {
+            for (long j = 0; j < 250000; j++) {
                 pw.write((r.nextInt(899) + 100) + "_" + (r.nextInt(899) + 100) + ";" + String.format("%.6f", minLongitude + Math.random() * lonDiff) + ";" + String.format("%.6f", minLatitude + Math.random() * latDiff) + ";" + sd.format(new Date(ThreadLocalRandom.current().nextLong(minDate.getTime(), maxDate.getTime()))) + "\r\n");
             }
 
