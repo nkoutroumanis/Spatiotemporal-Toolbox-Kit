@@ -24,10 +24,10 @@ public class LoadHistogram {
 
         this.numberOfCellsxAxis = conf.getLong("cellsInXAxis");
         this.numberOfCellsyAxis = conf.getLong("cellsInYAxis");
-        this.minx = conf.getDouble("space2D.minx");
-        this.miny = conf.getDouble("space2D.miny");
-        this.maxx = conf.getDouble("space2D.maxx");
-        this.maxy = conf.getDouble("space2D.maxy");
+        this.minx = conf.getDouble("rectangle.minx");
+        this.miny = conf.getDouble("rectangle.miny");
+        this.maxx = conf.getDouble("rectangle.maxx");
+        this.maxy = conf.getDouble("rectangle.maxy");
 
         FileInputStream fis = null;
         ObjectInputStream ois = null;
