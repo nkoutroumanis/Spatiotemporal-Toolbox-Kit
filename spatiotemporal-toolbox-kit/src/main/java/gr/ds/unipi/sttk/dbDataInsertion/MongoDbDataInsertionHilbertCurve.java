@@ -108,7 +108,6 @@ public final class MongoDbDataInsertionHilbertCurve {
 //                //Document doc = new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", dateFormat.parse(separatedLine[numberOfColumnDate - 1]));
 //
             } catch (NumberFormatException | ParseException e) {
-                System.out.println(e);
                 continue;
             }
         }

@@ -73,7 +73,13 @@ public class AppConfig {
             Config csv = parser.getConfig("csv");
 
             if(parser.hasPath("dateFormat")){
-                rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
+
+                if(csv.hasPath("numberOfColumnVehicleId")){
+                    rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getString("headers"),csv.getInt("numberOfColumnVehicleId"),csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
+                }
+                else{
+                    rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
+                }
             }
             else{
                 rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"));
@@ -84,7 +90,14 @@ public class AppConfig {
             Config json = parser.getConfig("json");
 
             if(parser.hasPath("dateFormat")){
-                rp = new JsonRecordParser(datasource, json.getString("longitudeFieldName"), json.getString("latitudeFieldName"), json.getString("dateFieldName"), parser.getString("dateFormat"));
+
+                if(json.hasPath("vehicleIdFieldName")){
+                    rp = new JsonRecordParser(datasource, json.getString("vehicleIdFieldName"), json.getString("longitudeFieldName"), json.getString("latitudeFieldName"), json.getString("dateFieldName"), parser.getString("dateFormat"));
+                }
+                else{
+                    rp = new JsonRecordParser(datasource, json.getString("longitudeFieldName"), json.getString("latitudeFieldName"), json.getString("dateFieldName"), parser.getString("dateFormat"));
+                }
+
             }
             else{
                 rp = new JsonRecordParser(datasource, json.getString("longitudeFieldName"), json.getString("latitudeFieldName"));
