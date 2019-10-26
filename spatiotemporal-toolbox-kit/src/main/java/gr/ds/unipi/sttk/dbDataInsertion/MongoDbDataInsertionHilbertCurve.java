@@ -62,7 +62,9 @@ public final class MongoDbDataInsertionHilbertCurve {
 
         SmallHilbertCurve hc = HilbertCurve.small().bits(bits).dimensions(3);
 
+        System.out.println("111");
         while (parser.hasNextRecord()) {
+            System.out.println("222");
 
             try {
                 Record record = parser.nextRecord();
@@ -78,7 +80,6 @@ public final class MongoDbDataInsertionHilbertCurve {
                 Date d = dateFunction.apply(record);
 
                 if(d == null){
-                    System.out.println("Null date");
                     continue;
                 }
 
@@ -111,7 +112,6 @@ public final class MongoDbDataInsertionHilbertCurve {
 //                //Document doc = new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", dateFormat.parse(separatedLine[numberOfColumnDate - 1]));
 //
             } catch (ArrayIndexOutOfBoundsException | NumberFormatException | ParseException e) {
-                System.out.println(e);
                 continue;
             }
         }
