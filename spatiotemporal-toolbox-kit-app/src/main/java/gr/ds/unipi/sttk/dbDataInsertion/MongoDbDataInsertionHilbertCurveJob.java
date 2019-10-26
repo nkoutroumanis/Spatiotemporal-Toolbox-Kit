@@ -8,10 +8,8 @@ import gr.ds.unipi.sttk.AppConfig;
 public final class MongoDbDataInsertionHilbertCurveJob {
 
     public static void main(String args[]) throws Exception {
-
         AppConfig config = AppConfig.newAppConfig(args[0]);
         getMongoDbInsertionHilbertCurveJob(config.getConfig(), config.getRecordParser(config.getDataSource())).insertDataOnCollection();
-
     }
 
 
