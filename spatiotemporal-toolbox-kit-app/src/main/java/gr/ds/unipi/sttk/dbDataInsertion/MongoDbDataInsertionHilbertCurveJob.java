@@ -17,7 +17,7 @@ public final class MongoDbDataInsertionHilbertCurveJob {
         Config mongodb = config.getConfig("mongodb");
         Config space = config.getConfig("space");
         Config filter = config.getConfig("filter");
-        MongoDbDataInsertionHilbertCurve.Builder mongoDbDataInsertion = MongoDbDataInsertionHilbertCurve.newMongoDbDataInsertionHilbertCurve(mongodb.getString("host"),mongodb.getInt("port"),mongodb.getString("database"),mongodb.getString("username"),mongodb.getString("password") ,mongodb.getString("collection"), mongodb.getInt("batchSize"),recordParser, mongodb.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")),mongodb.getLong("minDate"), mongodb.getLong("maxDate"));
+        MongoDbDataInsertionHilbertCurve.Builder mongoDbDataInsertion = MongoDbDataInsertionHilbertCurve.newMongoDbDataInsertionHilbertCurve(mongodb.getString("host"),mongodb.getInt("port"),mongodb.getString("database"),mongodb.getString("username"),mongodb.getString("password") ,mongodb.getString("collection"), mongodb.getInt("batchSize"),recordParser, mongodb.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")),mongodb.getString("minDate"), mongodb.getString("maxDate"));
         if(mongodb.getBoolean("filter")){
             mongoDbDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));
         }
