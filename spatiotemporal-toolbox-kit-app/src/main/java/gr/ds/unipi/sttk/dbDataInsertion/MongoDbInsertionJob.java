@@ -1,5 +1,10 @@
 package gr.ds.unipi.sttk.dbDataInsertion;
 
+import com.typesafe.config.Config;
+import gr.ds.unipi.stpin.Rectangle;
+import gr.ds.unipi.stpin.parsers.RecordParser;
+import gr.ds.unipi.sttk.AppConfig;
+
 public final class MongoDbInsertionJob {
 
     public static void main(String args[]) throws Exception {
@@ -21,8 +26,18 @@ public final class MongoDbInsertionJob {
 //        System.out.println("syn2: " + (System.currentTimeMillis() - t3) / 1000);
 
         AppConfig config = AppConfig.newAppConfig(args[0]);
-        config.getMongoDbInsertion(config.getRecordParser(config.getDataSource())).insertDataOnCollection();
+        getMongoDbInsertion(config.getConfig(), config.getRecordParser(config.getDataSource())).insertDataOnCollection();
 
+    }
+
+    public static MongoDbDataInsertion getMongoDbInsertion(Config config, RecordParser recordParser) throws Exception {
+        Config mongodb = config.getConfig("mongodb");
+        Config filter = config.getConfig("filter");
+        MongoDbDataInsertion.Builder mongoDbDataInsertion = MongoDbDataInsertion.newMongoDbDataInsertion(mongodb.getString("host"),mongodb.getInt("port"),mongodb.getString("database"),mongodb.getString("username"),mongodb.getString("password") ,mongodb.getString("collection"), mongodb.getInt("batchSize"),recordParser);
+        if(mongodb.getBoolean("filter")){
+            mongoDbDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));
+        }
+        return mongoDbDataInsertion.build();
     }
 
 }

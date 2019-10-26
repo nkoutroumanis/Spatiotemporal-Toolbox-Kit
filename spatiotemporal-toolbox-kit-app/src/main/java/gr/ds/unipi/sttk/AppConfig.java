@@ -16,7 +16,7 @@ import gr.ds.unipi.stpin.parsers.VfiObjectParser;
 import java.io.File;
 
 public class AppConfig {
-    //public static final Config config = ConfigFactory.load();
+
     private final Config config;
 
     private AppConfig(String pathOfConfigFile){
@@ -99,4 +99,9 @@ public class AppConfig {
 
         return rp;
     }
+
+    public Config getConfig() {
+        return config;
+    }
+
 }
