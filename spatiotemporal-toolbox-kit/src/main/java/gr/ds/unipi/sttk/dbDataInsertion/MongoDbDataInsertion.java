@@ -129,7 +129,7 @@ public final class MongoDbDataInsertion {
 //                docs.add(new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", d));
 //                //Document doc = new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", dateFormat.parse(separatedLine[numberOfColumnDate - 1]));
 //
-            } catch (ArrayIndexOutOfBoundsException | NumberFormatException | ParseException e) {
+            } catch (NumberFormatException | ParseException e) {
                 continue;
             }
         }

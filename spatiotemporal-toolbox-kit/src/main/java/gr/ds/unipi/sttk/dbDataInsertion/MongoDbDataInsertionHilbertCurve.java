@@ -71,14 +71,11 @@ public final class MongoDbDataInsertionHilbertCurve {
                     continue;
                 }
 
-                DateFormat dateFormat = new SimpleDateFormat(parser.getDateFormat());
-
                 double longitude = Double.parseDouble(parser.getLongitude(record));
                 double latitude = Double.parseDouble(parser.getLatitude(record));
                 Date d = dateFunction.apply(record);
 
                 if(d == null){
-                    System.out.println("null date");
                     continue;
                 }
 
@@ -110,9 +107,8 @@ public final class MongoDbDataInsertionHilbertCurve {
 //                docs.add(new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", d));
 //                //Document doc = new Document("objectId", separatedLine[0]).append("location", embeddedDoc).append("date", dateFormat.parse(separatedLine[numberOfColumnDate - 1]));
 //
-            } catch (ArrayIndexOutOfBoundsException | NumberFormatException | ParseException e) {
+            } catch (NumberFormatException | ParseException e) {
                 System.out.println(e);
-
                 continue;
             }
         }
