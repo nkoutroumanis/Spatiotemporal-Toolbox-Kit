@@ -73,6 +73,10 @@ public final class MongoDbDataInsertionHilbertCurve {
                 double latitude = Double.parseDouble(parser.getLatitude(record));
                 Date d = dateFormat.parse(parser.getDate(record));
 
+                if(d == null){
+                    continue;
+                }
+
                 if(rectangle != null) {
                     //filtering
                     if (((Double.compare(longitude, rectangle.getMaxx()) == 1) || (Double.compare(longitude, rectangle.getMinx()) == -1)) || ((Double.compare(latitude, rectangle.getMaxy()) == 1) || (Double.compare(latitude, rectangle.getMiny()) == -1))) {

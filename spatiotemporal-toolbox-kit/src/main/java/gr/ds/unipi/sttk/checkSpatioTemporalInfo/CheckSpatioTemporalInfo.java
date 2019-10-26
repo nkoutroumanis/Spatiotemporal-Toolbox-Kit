@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 public final class CheckSpatioTemporalInfo {
 
@@ -46,7 +47,7 @@ public final class CheckSpatioTemporalInfo {
         Set<String> errorLines = new HashSet<>();
         Set<String> spatioTemporalInformationOutOfRange = new HashSet<>();
 
-        DateFormat dateFormat = new SimpleDateFormat(recordParser.getDateFormat());
+        Function<Record, Date> dateFunction = RecordParser.dateFunction(recordParser);
 
         while (recordParser.hasNextRecord()) {
 
@@ -57,7 +58,7 @@ public final class CheckSpatioTemporalInfo {
 
                 double longitude = Double.parseDouble(recordParser.getLongitude(record));
                 double latitude = Double.parseDouble(recordParser.getLatitude(record));
-                Date d = dateFormat.parse(recordParser.getDate(record));
+                Date d = dateFunction.apply(record);
 
                 //filtering
                 if (((Double.compare(longitude, rectangle.getMaxx()) == 1) || (Double.compare(longitude, rectangle.getMinx()) == -1)) || ((Double.compare(latitude, rectangle.getMaxy()) == 1) || (Double.compare(latitude, rectangle.getMiny()) == -1))) {
@@ -95,9 +96,9 @@ public final class CheckSpatioTemporalInfo {
                 numberOfRecords++;
 
 
-            } catch (NumberFormatException | ParseException | ArrayIndexOutOfBoundsException e) {
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 
-                if ((e instanceof NumberFormatException) || (e instanceof ParseException)) {
+                if ((e instanceof NumberFormatException)) {
                     logger.warn("Spatial information of record can not be parsed {} \nLine {}", e, record.getMetadata());
                 } else {
                     logger.warn("Record is incorrect {} \nLine {}", e, record.getMetadata());
@@ -120,10 +121,6 @@ public final class CheckSpatioTemporalInfo {
         errorLines.forEach((s) -> fileOutput.out(s, fileName));
         fileOutput.out("\r\n", fileName);
 
-//        fileOutput.out("Empty Spatio-temporal Information at: ", fileName);
-//        emptySpatialInformation.forEach((s) -> fileOutput.out(s, fileName));
-//        fileOutput.out("\r\n", fileName);
-
         fileOutput.out("Spatial Information out of range at: ", fileName);
         spatioTemporalInformationOutOfRange.forEach((s) -> fileOutput.out(s, fileName));
         fileOutput.out("\r\n", fileName);
@@ -134,8 +131,15 @@ public final class CheckSpatioTemporalInfo {
         fileOutput.out("Max Latitude: " + maxy, fileName);
         fileOutput.out("Min Latitude: " + miny, fileName);
 
-        fileOutput.out("Max Date: " + dateFormat.format(maxDate), fileName);
-        fileOutput.out("Min Date: " + dateFormat.format(minDate), fileName);
+        if(recordParser.getDateFormat().equals("unixTimestamp")){
+            fileOutput.out("Max Date: " + maxDate.getTime(), fileName);
+            fileOutput.out("Min Date: " + minDate.getTime(), fileName);
+        }
+        else{
+            DateFormat dateFormat = new SimpleDateFormat(recordParser.getDateFormat());
+            fileOutput.out("Max Date: " + dateFormat.format(maxDate), fileName);
+            fileOutput.out("Min Date: " + dateFormat.format(minDate), fileName);
+        }
 
         fileOutput.out("\r\n", fileName);
         fileOutput.out("All of the records are " + numberOfRecords, fileName);

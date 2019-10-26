@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Function;
 
 public final class MongoDbDataInsertion {
 
@@ -78,7 +79,7 @@ public final class MongoDbDataInsertion {
 
     public void insertDataOnCollection() throws IOException {
 
-
+        Function<Record, Date> dateFunction = RecordParser.dateFunction(parser);
 
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
@@ -92,11 +93,15 @@ public final class MongoDbDataInsertion {
                     continue;
                 }
 
-                DateFormat dateFormat = new SimpleDateFormat(parser.getDateFormat());
+                //DateFormat dateFormat = new SimpleDateFormat(parser.getDateFormat());
 
                 double longitude = Double.parseDouble(parser.getLongitude(record));
                 double latitude = Double.parseDouble(parser.getLatitude(record));
-                Date d = dateFormat.parse(parser.getDate(record));
+                Date d = dateFunction.apply(record);
+
+                if(d == null){
+                    continue;
+                }
 
                 if(rectangle != null) {
                     //filtering
