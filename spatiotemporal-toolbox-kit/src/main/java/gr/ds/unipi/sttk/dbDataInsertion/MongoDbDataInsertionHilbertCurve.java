@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Function;
 
 public final class MongoDbDataInsertionHilbertCurve {
 
@@ -30,8 +31,8 @@ public final class MongoDbDataInsertionHilbertCurve {
     private final int bits;
     private final long maxOrdinates;
     private final Rectangle space;
-    private final long minDate;
-    private final long maxDate;
+    private final Date minDate;
+    private final Date maxDate;
 
     private MongoDbDataInsertionHilbertCurve(Builder builder) {
         mongoOutput = builder.mongoOutput;
@@ -40,21 +41,24 @@ public final class MongoDbDataInsertionHilbertCurve {
         bits = builder.bits;
         maxOrdinates = 1L << bits;
         space = builder.space;
+
         minDate = builder.minDate;
         maxDate = builder.maxDate;
 
         rectangle = builder.rectangle;
     }
 
-    public static MongoDbDataInsertionHilbertCurve.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space, long minDate, long maxDate) throws Exception {
+    public static MongoDbDataInsertionHilbertCurve.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
         return new MongoDbDataInsertionHilbertCurve.Builder(new MongoOutput(host, port, database, username, password, collection, batchSize), parser, bits, space, minDate, maxDate);
     }
 
     public void insertDataOnCollection() throws IOException {
 
+        Function<Record, Date> dateFunction = RecordParser.dateFunction(parser);
+
+
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
-
 
         SmallHilbertCurve hc = HilbertCurve.small().bits(bits).dimensions(3);
 
@@ -71,7 +75,7 @@ public final class MongoDbDataInsertionHilbertCurve {
 
                 double longitude = Double.parseDouble(parser.getLongitude(record));
                 double latitude = Double.parseDouble(parser.getLatitude(record));
-                Date d = dateFormat.parse(parser.getDate(record));
+                Date d = dateFunction.apply(record);
 
                 if(d == null){
                     continue;
@@ -84,7 +88,7 @@ public final class MongoDbDataInsertionHilbertCurve {
                     }
                 }
 
-                long index = hc.index(GeoUtil.scalePoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate, maxDate, maxOrdinates));
+                long index = hc.index(GeoUtil.scalePoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate.getTime(), maxDate.getTime(), maxOrdinates));
 
 //                Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
 //                        .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
@@ -121,18 +125,32 @@ public final class MongoDbDataInsertionHilbertCurve {
         private final RecordParser parser;
         private final int bits;
         private final Rectangle space;
-        private final long minDate;
-        private final long maxDate;
+        private final Date minDate;
+        private final Date maxDate;
 
         private Rectangle rectangle = null; // = Rectangle.newRectangle(-180, -90, 180, 90);
 
-        public Builder(MongoOutput mongoOutput, RecordParser parser, int bits, Rectangle space, long minDate, long maxDate) throws Exception {
+        public Builder(MongoOutput mongoOutput, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
             this.mongoOutput = mongoOutput;
             this.parser = parser;
             this.bits = bits;
             this.space = space;
-            this.minDate = minDate;
-            this.maxDate = maxDate;
+
+            if(parser.getDateFormat().equals("unixTimestamp")){
+                this.minDate = new Date(Long.valueOf(minDate));
+                this.maxDate = new Date(Long.valueOf(maxDate));
+            }
+            else{
+                DateFormat dateFormat = new SimpleDateFormat(parser.getDateFormat());
+
+                try {
+                    this.minDate = dateFormat.parse(minDate);
+                    this.maxDate = dateFormat.parse(maxDate);
+                } catch (ParseException e) {
+                    throw new Exception("Min and Max Dates strings should follow the format of the defined dateFormat");
+                }
+            }
+
         }
 
         public Builder filter(Rectangle rectangle) {
