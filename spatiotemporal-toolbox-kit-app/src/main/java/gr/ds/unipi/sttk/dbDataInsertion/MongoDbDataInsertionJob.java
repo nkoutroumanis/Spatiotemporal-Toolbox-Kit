@@ -5,7 +5,7 @@ import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.parsers.RecordParser;
 import gr.ds.unipi.sttk.AppConfig;
 
-public final class MongoDbInsertionJob {
+public final class MongoDbDataInsertionJob {
 
     public static void main(String args[]) throws Exception {
 

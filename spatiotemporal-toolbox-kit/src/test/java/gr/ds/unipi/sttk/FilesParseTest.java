@@ -5,8 +5,6 @@ import org.davidmoten.hilbert.HilbertCurve;
 import org.davidmoten.hilbert.SmallHilbertCurve;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class FilesParseTest {
 
     @Test

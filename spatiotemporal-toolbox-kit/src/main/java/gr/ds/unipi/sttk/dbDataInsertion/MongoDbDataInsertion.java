@@ -1,8 +1,5 @@
 package gr.ds.unipi.sttk.dbDataInsertion;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigRenderOptions;
-import com.typesafe.config.ConfigValueFactory;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.outputs.MongoOutput;

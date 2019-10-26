@@ -1,8 +1,8 @@
 package gr.ds.unipi.sttk.kNNSequential;
 
-import gr.ds.unipi.sttk.FilesParse;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
+import gr.ds.unipi.sttk.FilesParse;
 
 import java.io.IOException;
 import java.text.DateFormat;

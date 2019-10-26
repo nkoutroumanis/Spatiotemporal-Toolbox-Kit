@@ -6,9 +6,9 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import gr.ds.unipi.sttk.FilesParse;
 import gr.ds.unipi.qtree.Point;
 import gr.ds.unipi.qtree.QuadTree;
+import gr.ds.unipi.sttk.FilesParse;
 import org.bson.Document;
 
 import java.io.*;

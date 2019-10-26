@@ -1,19 +1,11 @@
 package gr.ds.unipi.sttk.dbDataInsertion;
 
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import gr.ds.unipi.stpin.Rectangle;
-import gr.ds.unipi.stpin.datasources.Datasource;
-import gr.ds.unipi.stpin.datasources.FileDatasource;
-import gr.ds.unipi.stpin.datasources.KafkaDatasource;
-import gr.ds.unipi.stpin.parsers.CsvRecordParser;
-import gr.ds.unipi.stpin.parsers.JsonRecordParser;
 import gr.ds.unipi.stpin.parsers.RecordParser;
 import gr.ds.unipi.sttk.AppConfig;
 
-import java.io.File;
-
-public final class MongoDbInsertionHilbertCurveJob {
+public final class MongoDbDataInsertionHilbertCurveJob {
 
     public static void main(String args[]) throws Exception {
 

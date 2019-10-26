@@ -1,12 +1,12 @@
 package gr.ds.unipi.sttk.statistics;
 
+import com.typesafe.config.ConfigValue;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.outputs.FileOutput;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.JsonRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
-import com.typesafe.config.ConfigValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

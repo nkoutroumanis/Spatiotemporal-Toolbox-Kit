@@ -1,11 +1,11 @@
 package gr.ds.unipi.sttk.histogram;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.outputs.FileOutput;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
