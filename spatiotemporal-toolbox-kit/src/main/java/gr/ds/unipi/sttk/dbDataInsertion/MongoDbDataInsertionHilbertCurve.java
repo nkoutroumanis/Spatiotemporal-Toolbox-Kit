@@ -94,7 +94,7 @@ public final class MongoDbDataInsertionHilbertCurve {
 //                        .withValue("date", ConfigValueFactory.fromAnyRef(parser.getDate(record)));
 
                 Document embeddedDoc = new Document("type", "Point").append("coordinates", Arrays.asList(longitude, latitude));
-                Document doc = new Document("objectId", parser.getVehicle(record)).append("location", embeddedDoc).append("date", d).append("hilIndex", index);
+                Document doc = new Document("objectId", parser.getVehicle(record)).append("location", embeddedDoc).append("date", d).append("hilIndex", (int) index);
 
                 mongoOutput.out(doc,"");
 
