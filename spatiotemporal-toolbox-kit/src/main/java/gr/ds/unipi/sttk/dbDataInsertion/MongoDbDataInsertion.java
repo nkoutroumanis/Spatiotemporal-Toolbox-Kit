@@ -1,5 +1,8 @@
 package gr.ds.unipi.sttk.dbDataInsertion;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.ConfigValueFactory;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.outputs.MongoOutput;
@@ -110,13 +113,12 @@ public final class MongoDbDataInsertion {
                     }
                 }
 
-//                Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
-//                        .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
-//                        .withValue("location.coordinates", ConfigValueFactory.fromAnyRef(Arrays.asList(longitude,latitude)))
+                Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
+                        .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
+                        .withValue("location.coordinates", ConfigValueFactory.fromAnyRef(Arrays.asList(longitude,latitude)));//.withValue("vehicleId", ConfigValueFactory.fromAnyRef(parser.getVehicle(record)));
 //                        .withValue("date", ConfigValueFactory.fromAnyRef(parser.getDate(record)));
 
-                Document embeddedDoc = new Document("type", "Point").append("coordinates", Arrays.asList(longitude, latitude));
-                Document doc = new Document("objectId", parser.getVehicle(record)).append("location", embeddedDoc).append("date", d);
+                Document doc = Document.parse(config.root().render(ConfigRenderOptions.concise())).append("date", d);
 
                 mongoOutput.out(doc,"");
 
