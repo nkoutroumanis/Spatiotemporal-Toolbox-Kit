@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.github.davidmoten</groupId>
             <artifactId>hilbert-curve</artifactId>
-            <version>0.1.3</version>
+            <version>0.2.1</version>
         </dependency>
 
         <dependency>

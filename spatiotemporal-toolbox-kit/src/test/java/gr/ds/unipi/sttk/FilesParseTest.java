@@ -3,12 +3,33 @@ package gr.ds.unipi.sttk;
 import com.github.davidmoten.guavamini.Preconditions;
 import org.davidmoten.hilbert.HilbertCurve;
 import org.davidmoten.hilbert.Range;
+import org.davidmoten.hilbert.Ranges;
 import org.davidmoten.hilbert.SmallHilbertCurve;
 import org.junit.Test;
 
 import java.util.List;
 
 public class FilesParseTest {
+
+    @Test
+    public void example(){
+        SmallHilbertCurve c = HilbertCurve.small().bits(5).dimensions(2);
+        long[] point1 = new long[] {3, 3};
+        long[] point2 = new long[] {8, 10};
+
+
+//        System.out.println(c.index(8, 10));
+//
+//
+//        System.out.println(c.point(10)[0]+" "+c.point(10)[1]);
+//        System.out.println(c.point(132)[0]+" "+c.point(132)[1]);
+
+
+        int maxRanges = 0;
+        Ranges ranges = c.query(point1, point2, maxRanges);
+        ranges.stream().forEach(System.out::println);
+
+    }
 
     @Test
     public void harvesine() {
@@ -22,7 +43,7 @@ public class FilesParseTest {
         //long index = c.index(scalePoint(4,5,5,maxOrdinates));
         //System.out.println(index);
 
-        List<Range> rangesList = c.query(new long[]{3,3,5},new long[]{8,10,6},Integer.MAX_VALUE);
+        Ranges rangesList = c.query(new long[]{3,3,5},new long[]{8,10,6}, 3);
 
         rangesList.stream().forEach(i->{
             System.out.println(i);
