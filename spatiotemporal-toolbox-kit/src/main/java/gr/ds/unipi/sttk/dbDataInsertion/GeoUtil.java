@@ -13,7 +13,8 @@ public class GeoUtil {
     }
 
     private static long scale(double d, long max) {
-        Preconditions.checkArgument(d >= 0 && d <= 1);
+
+        Preconditions.checkArgument(((Double.compare(d,0) > 0) || (Double.compare(d,0) == 0)) && ((Double.compare(d,1) < 0) || (Double.compare(d,1) == 0)));
         if (d == 1) {
             return max;
         } else {
