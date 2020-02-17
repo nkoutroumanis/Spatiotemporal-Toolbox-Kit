@@ -9,6 +9,8 @@ Max Longitude: 26.603443
 Min Longitude: 20.15014
 Max Latitude: 41.825585
 Min Latitude: 34.919989
+Max Date: 2018-06-30 22:58:49
+Min Date: 2017-06-29 00:03:18
 
 
 All of the records are 10344
