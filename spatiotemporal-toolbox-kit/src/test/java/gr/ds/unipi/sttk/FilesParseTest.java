@@ -33,18 +33,29 @@ public class FilesParseTest {
 
     @Test
     public void harvesine() {
-        int bits = 3;
+        int bits = 10;
         long maxOrdinates = 1L << bits;
 
 
         SmallHilbertCurve c = HilbertCurve.small().bits(bits).dimensions(3);
 
-        Ranges rangesList = c.query(new long[]{3,3,5}, new long[]{8,10,6}, 0);
+        Ranges rangesList = c.query(new long[]{3,3,5}, new long[]{8,10,6}, 1);
 
         rangesList.stream().forEach(i->{
             System.out.println(i);
         });
 
+        System.out.println(c.index(new long[]{3,3,5}));
+        System.out.println(c.index(new long[]{8,10,5}));
+
+        System.out.println(c.index(new long[]{3,10,5}));
+        System.out.println(c.index(new long[]{8,3,5}));
+
+        System.out.println(c.index(new long[]{3,3,6}));
+        System.out.println(c.index(new long[]{8,10,6}));
+
+        System.out.println(c.index(new long[]{3,10,6}));
+        System.out.println(c.index(new long[]{8,3,6}));
 
 //        long[] point = c.point(3);
 //        System.out.println(point[0]+ "," +point[1]);
