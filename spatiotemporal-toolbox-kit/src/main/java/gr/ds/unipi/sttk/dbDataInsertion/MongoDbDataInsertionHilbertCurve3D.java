@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
 
-public final class MongoDbDataInsertionHilbertCurve {
+public final class MongoDbDataInsertionHilbertCurve3D {
 
-    private static final Logger logger = LoggerFactory.getLogger(MongoDbDataInsertionHilbertCurve.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoDbDataInsertionHilbertCurve3D.class);
 
     private final MongoOutput mongoOutput;
     private final RecordParser parser;
@@ -37,7 +37,7 @@ public final class MongoDbDataInsertionHilbertCurve {
     private final Date minDate;
     private final Date maxDate;
 
-    private MongoDbDataInsertionHilbertCurve(Builder builder) {
+    private MongoDbDataInsertionHilbertCurve3D(Builder builder) {
         mongoOutput = builder.mongoOutput;
         parser = builder.parser;
 
@@ -51,14 +51,13 @@ public final class MongoDbDataInsertionHilbertCurve {
         rectangle = builder.rectangle;
     }
 
-    public static MongoDbDataInsertionHilbertCurve.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
-        return new MongoDbDataInsertionHilbertCurve.Builder(new MongoOutput(host, port, database, username, password, collection, batchSize), parser, bits, space, minDate, maxDate);
+    public static MongoDbDataInsertionHilbertCurve3D.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
+        return new MongoDbDataInsertionHilbertCurve3D.Builder(new MongoOutput(host, port, database, username, password, collection, batchSize), parser, bits, space, minDate, maxDate);
     }
 
     public void insertDataOnCollection() throws IOException {
 
-        Function<Record, Date> dateFunction = RecordParser.dateFunction(parser);
-
+        Function<Record, Date> dateFunction = parser.getDateFunction();
 
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
@@ -89,7 +88,7 @@ public final class MongoDbDataInsertionHilbertCurve {
                     }
                 }
 
-                long index = hc.index(GeoUtil.scalePoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate.getTime(), maxDate.getTime(), maxOrdinates));
+                long index = hc.index(GeoUtil.scale3DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate.getTime(), maxDate.getTime(), maxOrdinates));
 
                 Config config = parser.toConfig(record).withoutPath(parser.getLongitudeFieldName(record)).withoutPath(parser.getLatitudeFieldName(record)).withoutPath(parser.getDateFieldName(record))
                         .withValue("location.type", ConfigValueFactory.fromAnyRef("Point"))
@@ -161,8 +160,8 @@ public final class MongoDbDataInsertionHilbertCurve {
             return this;
         }
 
-        public MongoDbDataInsertionHilbertCurve build() {
-            return new MongoDbDataInsertionHilbertCurve(this);
+        public MongoDbDataInsertionHilbertCurve3D build() {
+            return new MongoDbDataInsertionHilbertCurve3D(this);
         }
     }
 

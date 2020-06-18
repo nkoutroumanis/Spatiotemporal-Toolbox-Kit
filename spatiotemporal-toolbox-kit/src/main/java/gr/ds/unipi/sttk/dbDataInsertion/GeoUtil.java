@@ -4,12 +4,18 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public class GeoUtil {
 
-    public static long[] scalePoint(double lon, double minLon, double maxLon, double lat, double minLat, double maxLat, long time, long minTime, long maxTime,
+    public static long[] scale3DPoint(double lon, double minLon, double maxLon, double lat, double minLat, double maxLat, long time, long minTime, long maxTime,
                                     long max) {
         long x = scale(( lon - minLon) / (maxLon - minLon), max);
         long y = scale(( lat - minLat) / (maxLat - minLat), max);
         long z = scale(((double) time - minTime) / (maxTime - minTime), max);
         return new long[] { x, y, z };
+    }
+
+    public static long[] scale2DPoint(double lon, double minLon, double maxLon, double lat, double minLat, double maxLat, long max) {
+        long x = scale(( lon - minLon) / (maxLon - minLon), max);
+        long y = scale(( lat - minLat) / (maxLat - minLat), max);
+        return new long[] { x, y};
     }
 
     private static long scale(double d, long max) {

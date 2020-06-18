@@ -47,7 +47,7 @@ public final class CheckSpatioTemporalInfo {
         Set<String> errorLines = new HashSet<>();
         Set<String> spatioTemporalInformationOutOfRange = new HashSet<>();
 
-        Function<Record, Date> dateFunction = RecordParser.dateFunction(recordParser);
+        Function<Record, Date> dateFunction = recordParser.getDateFunction();
 
         while (recordParser.hasNextRecord()) {
 
