@@ -34,8 +34,6 @@ public final class MongoDbDataInsertionHilbertCurve2D {
     private final int bits;
     private final long maxOrdinates;
     private final Rectangle space;
-    private final Date minDate;
-    private final Date maxDate;
 
     private MongoDbDataInsertionHilbertCurve2D(Builder builder) {
         mongoOutput = builder.mongoOutput;
@@ -45,14 +43,11 @@ public final class MongoDbDataInsertionHilbertCurve2D {
         maxOrdinates = 1L << bits;
         space = builder.space;
 
-        minDate = builder.minDate;
-        maxDate = builder.maxDate;
-
         rectangle = builder.rectangle;
     }
 
-    public static MongoDbDataInsertionHilbertCurve2D.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
-        return new MongoDbDataInsertionHilbertCurve2D.Builder(new MongoOutput(host, port, database, username, password, collection, batchSize), parser, bits, space, minDate, maxDate);
+    public static MongoDbDataInsertionHilbertCurve2D.Builder newMongoDbDataInsertionHilbertCurve(String host, int port, String database, String username, String password, String collection, int batchSize, RecordParser parser, int bits, Rectangle space) throws Exception {
+        return new MongoDbDataInsertionHilbertCurve2D.Builder(new MongoOutput(host, port, database, username, password, collection, batchSize), parser, bits, space);
     }
 
     public void insertDataOnCollection() throws IOException {
@@ -127,31 +122,14 @@ public final class MongoDbDataInsertionHilbertCurve2D {
         private final RecordParser parser;
         private final int bits;
         private final Rectangle space;
-        private final Date minDate;
-        private final Date maxDate;
 
         private Rectangle rectangle = null; // = Rectangle.newRectangle(-180, -90, 180, 90);
 
-        public Builder(MongoOutput mongoOutput, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate) throws Exception {
+        public Builder(MongoOutput mongoOutput, RecordParser parser, int bits, Rectangle space) throws Exception {
             this.mongoOutput = mongoOutput;
             this.parser = parser;
             this.bits = bits;
             this.space = space;
-
-            if(parser.getDateFormat().equals("unixTimestamp")){
-                this.minDate = new Date(Long.valueOf(minDate));
-                this.maxDate = new Date(Long.valueOf(maxDate));
-            }
-            else{
-                DateFormat dateFormat = new SimpleDateFormat(parser.getDateFormat());
-
-                try {
-                    this.minDate = dateFormat.parse(minDate);
-                    this.maxDate = dateFormat.parse(maxDate);
-                } catch (ParseException e) {
-                    throw new Exception("Min and Max Dates strings should follow the format of the defined dateFormat");
-                }
-            }
 
         }
 
