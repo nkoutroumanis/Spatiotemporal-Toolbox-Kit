@@ -76,6 +76,9 @@ public class AppConfig {
 
                 if(csv.hasPath("numberOfColumnVehicleId")){
                     rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getString("header"),csv.getInt("numberOfColumnVehicleId"),csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
+                    if(csv.hasPath("type")){
+                        rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getString("header"),csv.getInt("numberOfColumnVehicleId"),csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"), parser.getString("types"));
+                    }
                 }
                 else{
                     rp = new CsvRecordParser(datasource, csv.getString("separator"), csv.getInt("numberOfColumnLongitude"), csv.getInt("numberOfColumnLatitude"), csv.getInt("numberOfColumnDate"), parser.getString("dateFormat"));
