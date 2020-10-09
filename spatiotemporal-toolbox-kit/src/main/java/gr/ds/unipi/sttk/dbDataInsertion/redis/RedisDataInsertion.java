@@ -4,6 +4,7 @@ import com.github.davidmoten.geo.GeoHash;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.outputs.RedisOutput;
+import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
 import org.slf4j.Logger;
@@ -60,6 +61,11 @@ public class RedisDataInsertion {
                         continue;
                     }
                 }
+
+                if(parser instanceof CsvRecordParser){
+                    record.getFieldValues().set(((CsvRecordParser) parser).getDateIndex(),d);
+                }
+
 
                 String geoHash = GeoHash.encodeHash(latitude, longitude, this.length);
                 redisOutput.out(record,geoHash+"-"+d.getTime()+"-"+randomCharacterNumericString());
