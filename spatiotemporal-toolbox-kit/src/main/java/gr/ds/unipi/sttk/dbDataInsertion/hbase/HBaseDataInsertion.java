@@ -1,8 +1,9 @@
-package gr.ds.unipi.sttk.dbDataInsertion.redis;
+package gr.ds.unipi.sttk.dbDataInsertion.hbase;
 
 import com.github.davidmoten.geo.GeoHash;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
+import gr.ds.unipi.stpin.outputs.HBaseOutput;
 import gr.ds.unipi.stpin.outputs.RedisOutput;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
@@ -16,22 +17,22 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.function.Function;
 
-public class RedisDataInsertion {
+public class HBaseDataInsertion {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertion.class);
+    private static final Logger logger = LoggerFactory.getLogger(HBaseDataInsertion.class);
     private final RecordParser parser;
     private final Rectangle rectangle;
     private final int length;
-    private final RedisOutput redisOutput;
+    private final HBaseOutput hbaseOutput;
 
-    private RedisDataInsertion(RedisDataInsertion.Builder builder) {
+    private HBaseDataInsertion(HBaseDataInsertion.Builder builder) {
         parser = builder.parser;
         rectangle = builder.rectangle;
         length = builder.length;
-        redisOutput = builder.redisOutput;
+        hbaseOutput = builder.hbaseOutput;
     }
 
-    public void insertDataOnRedis() throws IOException {
+    public void insertDatainHBase() throws IOException {
         Function<Record, Date> dateFunction = parser.getDateFunction();
 
         long startTimeWindow = System.currentTimeMillis();
@@ -68,7 +69,7 @@ public class RedisDataInsertion {
 
 
                 String geoHash = GeoHash.encodeHash(latitude, longitude, this.length);
-                redisOutput.out(record,geoHash+"-"+d.getTime()+"-"+randomCharacterNumericString());
+                hbaseOutput.out(record,geoHash+"-"+d.getTime()+"-"+randomCharacterNumericString());
 
                 count++;
 
@@ -77,14 +78,14 @@ public class RedisDataInsertion {
             }
         }
 
-        redisOutput.close();
-        logger.info("Totally {} documents have been inserted in Redis ",count);
+        hbaseOutput.close();
+        logger.info("Totally {} documents have been inserted in HBase",count);
         logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
 
     }
 
-    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length) throws Exception {
-        return new RedisDataInsertion.Builder(new RedisOutput(host, port, database,batchSize), parser, length);
+    public static HBaseDataInsertion.Builder newHBaseDataInsertion(String host, String table, int batchSize, RecordParser parser, int length) throws Exception {
+        return new HBaseDataInsertion.Builder(new HBaseOutput(host, table, batchSize), parser, length);
     }
 
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -102,24 +103,24 @@ public class RedisDataInsertion {
     public static class Builder {
 
         private final RecordParser parser;
-        private final RedisOutput redisOutput;
+        private final HBaseOutput hbaseOutput;
         private final int length;
 
         private Rectangle rectangle = null; // = Rectangle.newRectangle(-180, -90, 180, 90);
 
-        public Builder(RedisOutput redisOutput, RecordParser parser, int length) throws Exception {
+        public Builder(HBaseOutput hbaseOutput, RecordParser parser, int length) throws Exception {
             this.parser = parser;
             this.length = length;
-            this.redisOutput = redisOutput;
+            this.hbaseOutput = hbaseOutput;
         }
 
-        public RedisDataInsertion.Builder filter(Rectangle rectangle) {
+        public HBaseDataInsertion.Builder filter(Rectangle rectangle) {
             this.rectangle = rectangle;
             return this;
         }
 
-        public RedisDataInsertion build() {
-            return new RedisDataInsertion(this);
+        public HBaseDataInsertion build() {
+            return new HBaseDataInsertion(this);
         }
     }
 

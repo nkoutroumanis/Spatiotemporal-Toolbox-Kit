@@ -15,10 +15,10 @@ public class RedisDbDataInsertionGeohashJob {
     private static RedisDataInsertion getRedisDataInsertionJob(Config config, RecordParser recordParser) throws Exception {
         Config redis = config.getConfig("redis");
         Config filter = config.getConfig("filter");
-        RedisDataInsertion.Builder mongoDbDataInsertion = RedisDataInsertion.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("length"));
+        RedisDataInsertion.Builder redisDataInsertion = RedisDataInsertion.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("length"));
         if(redis.getBoolean("filter")){
-            mongoDbDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));
+            redisDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));
         }
-        return mongoDbDataInsertion.build();
+        return redisDataInsertion.build();
     }
 }
