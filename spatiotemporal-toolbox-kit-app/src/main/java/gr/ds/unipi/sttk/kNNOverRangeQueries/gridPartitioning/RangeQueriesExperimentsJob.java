@@ -1,9 +1,10 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import gr.ds.unipi.sttk.FilesParse;
@@ -14,16 +15,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RangeQueriesExperimentsJob {
     public static void main(String args[]) throws IOException {
 
-        MongoCredential credential = MongoCredential.createCredential("myUserAdmin", "test", "abc123".toCharArray());
-        MongoClientOptions options = MongoClientOptions.builder().maxConnectionIdleTime(90000000/*90000*/).build();
-        MongoClient mongoClient = new MongoClient(new ServerAddress("83.212.102.163", 28017), credential, options);
+        MongoCredential credential = MongoCredential.createCredential("myUserAdmin", "test", "abc123".toCharArray());//admin for global
 
+        MongoClientSettings clientSettings = MongoClientSettings.builder().credential(credential).applyToClusterSettings(builder ->
+                builder.hosts(Arrays.asList(new ServerAddress("83.212.102.163", 28017))))
+                .applyToConnectionPoolSettings(builder -> builder.maxConnectionIdleTime(90000000, TimeUnit.SECONDS)).build();
+
+        MongoClient mongoClient = MongoClients.create(clientSettings);
         MongoCollection m = mongoClient.getDatabase("test").getCollection("geoPoints");
         Random r = new Random();
 

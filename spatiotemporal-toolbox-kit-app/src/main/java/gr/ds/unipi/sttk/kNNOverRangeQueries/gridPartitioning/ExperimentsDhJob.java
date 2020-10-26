@@ -1,9 +1,10 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import gr.ds.unipi.sttk.FilesParse;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,10 +46,14 @@ public class ExperimentsDhJob {
         final int numberOfColumnLatitude = 3;
         final int numberOfColumnDate = 4;
 
+        MongoCredential credential = MongoCredential.createCredential(database, database, database.toCharArray());//admin for global
 
-        MongoCredential credential = MongoCredential.createCredential(database, database, database.toCharArray());
-        MongoClientOptions options = MongoClientOptions.builder().maxConnectionIdleTime(90000000/*90000*/).build();
-        MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017), credential, options);
+        MongoClientSettings clientSettings = MongoClientSettings.builder().credential(credential).applyToClusterSettings(builder ->
+                builder.hosts(Arrays.asList(new ServerAddress("localhost", 27017))))
+                .applyToConnectionPoolSettings(builder -> builder.maxConnectionIdleTime(90000000, TimeUnit.SECONDS)).build();
+
+        MongoClient mongoClient = MongoClients.create(clientSettings);
+
         MongoCollection m = mongoClient.getDatabase(database).getCollection("geoPoints");
 
 

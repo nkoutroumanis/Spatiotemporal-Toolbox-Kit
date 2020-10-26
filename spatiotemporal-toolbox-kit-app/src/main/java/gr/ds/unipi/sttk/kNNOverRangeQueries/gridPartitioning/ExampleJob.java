@@ -1,23 +1,28 @@
 package gr.ds.unipi.sttk.kNNOverRangeQueries.gridPartitioning;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class ExampleJob {
 
     public static void main(String args[]) {
 
+        MongoCredential credential = MongoCredential.createCredential("myUserAdmin", "test", "abc123".toCharArray());//admin for global
 
-        MongoCredential credential = MongoCredential.createCredential("myUserAdmin", "test", "abc123".toCharArray());
-        MongoClientOptions options = MongoClientOptions.builder().maxConnectionIdleTime(90000).build();
-        MongoClient mongoClient = new MongoClient(new ServerAddress("83.212.102.163", 28017), credential, options);
+        MongoClientSettings clientSettings = MongoClientSettings.builder().credential(credential).applyToClusterSettings(builder ->
+                builder.hosts(Arrays.asList(new ServerAddress("83.212.102.163", 28017))))
+                .applyToConnectionPoolSettings(builder -> builder.maxConnectionIdleTime(90000000, TimeUnit.SECONDS)).build();
+
+        MongoClient mongoClient = MongoClients.create(clientSettings);
 
         MongoCollection m = mongoClient.getDatabase("test").getCollection("geoPoints");
 
