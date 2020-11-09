@@ -3,6 +3,8 @@ package gr.ds.unipi.sttk.dbDataInsertion.redis;
 import com.github.davidmoten.geo.GeoHash;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
+import gr.ds.unipi.stpin.outputs.RedisClusterOutput;
+import gr.ds.unipi.stpin.outputs.RedisInstanceOutput;
 import gr.ds.unipi.stpin.outputs.RedisOutput;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
@@ -31,7 +33,7 @@ public class RedisDataInsertion {
         redisOutput = builder.redisOutput;
     }
 
-    public void insertDataOnRedis() throws IOException {
+    public void insertDataOnRedis() throws Exception {
         Function<Record, Date> dateFunction = parser.getDateFunction();
 
         long startTimeWindow = System.currentTimeMillis();
@@ -83,10 +85,19 @@ public class RedisDataInsertion {
 
     }
 
-    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length) throws Exception {
-        return new RedisDataInsertion.Builder(new RedisOutput(host, port, database,batchSize), parser, length);
+    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length, boolean isCluster) throws Exception {
+        if(isCluster){
+            return new RedisDataInsertion.Builder(new RedisClusterOutput(host, port, database,batchSize), parser, length);
+        }
+        else{
+            return new RedisDataInsertion.Builder(new RedisInstanceOutput(host, port, database,batchSize), parser, length);
+        }
+
     }
 
+//    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length) throws Exception {
+//        return new RedisDataInsertion.Builder(new RedisOutput(host, port, database,batchSize), parser, length);
+//    }
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static SecureRandom rnd = new SecureRandom();
 
