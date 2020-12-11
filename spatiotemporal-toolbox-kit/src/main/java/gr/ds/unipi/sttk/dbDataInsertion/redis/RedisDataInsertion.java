@@ -68,9 +68,11 @@ public class RedisDataInsertion {
                     record.getFieldValues().set(((CsvRecordParser) parser).getDateIndex(),d);
                 }
 
+                //forbaseline
+//                redisOutput.out(record," ");
 
                 String geoHash = GeoHash.encodeHash(latitude, longitude, this.length);
-                redisOutput.out(record,geoHash+"-"+d.getTime()+"-"+randomCharacterNumericString());
+                redisOutput.out(record,geoHash+"-"+d.getTime());
 
                 count++;
 
@@ -94,21 +96,6 @@ public class RedisDataInsertion {
         }
 
     }
-
-//    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length) throws Exception {
-//        return new RedisDataInsertion.Builder(new RedisOutput(host, port, database,batchSize), parser, length);
-//    }
-    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static SecureRandom rnd = new SecureRandom();
-
-    private static String randomCharacterNumericString(){
-        int len = 10;
-        StringBuilder sb = new StringBuilder(len);
-        for( int i = 0; i < len; i++ )
-            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
-        return sb.toString();
-    }
-
 
     public static class Builder {
 
