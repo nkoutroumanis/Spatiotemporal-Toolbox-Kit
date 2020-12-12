@@ -1,6 +1,5 @@
 package gr.ds.unipi.sttk.dbDataInsertion.redis;
 
-import com.github.davidmoten.geo.GeoHash;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.datasources.Datasource;
 import gr.ds.unipi.stpin.outputs.RedisClusterOutput;
@@ -9,28 +8,37 @@ import gr.ds.unipi.stpin.outputs.RedisOutput;
 import gr.ds.unipi.stpin.parsers.CsvRecordParser;
 import gr.ds.unipi.stpin.parsers.Record;
 import gr.ds.unipi.stpin.parsers.RecordParser;
+import gr.ds.unipi.sttk.dbDataInsertion.GeoUtil;
+import org.davidmoten.hilbert.HilbertCurve;
+import org.davidmoten.hilbert.SmallHilbertCurve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.security.SecureRandom;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Function;
 
-public class RedisDataInsertion {
+public class RedisDataInsertionHilbertCurve2D {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertion.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertionHilbertCurve2D.class);
     private final RecordParser parser;
     private final Rectangle rectangle;
-    private final int length;
     private final RedisOutput redisOutput;
 
-    private RedisDataInsertion(RedisDataInsertion.Builder builder) {
+    private final int bits;
+    private final long maxOrdinates;
+    private final Rectangle space;
+
+    private RedisDataInsertionHilbertCurve2D(RedisDataInsertionHilbertCurve2D.Builder builder) {
         parser = builder.parser;
         rectangle = builder.rectangle;
-        length = builder.length;
         redisOutput = builder.redisOutput;
+
+        bits = builder.bits;
+        maxOrdinates = 1L << bits;
+        space = builder.space;
     }
 
     public void insertDataOnRedis() throws Exception {
@@ -39,6 +47,7 @@ public class RedisDataInsertion {
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
 
+        SmallHilbertCurve hc = HilbertCurve.small().bits(bits).dimensions(2);
 
         while (parser.hasNextRecord()) {
 
@@ -51,11 +60,6 @@ public class RedisDataInsertion {
 
                 double longitude = Double.parseDouble(parser.getLongitude(record));
                 double latitude = Double.parseDouble(parser.getLatitude(record));
-                Date d = dateFunction.apply(record);
-
-                if(d == null){
-                    continue;
-                }
 
                 if(rectangle != null) {
                     //filtering
@@ -64,15 +68,11 @@ public class RedisDataInsertion {
                     }
                 }
 
-                if(parser instanceof CsvRecordParser){
-                    record.getFieldValues().set(((CsvRecordParser) parser).getDateIndex(),d);
-                }
-
                 //forbaseline
 //                redisOutput.out(record," ");
 
-                String geoHash = GeoHash.encodeHash(latitude, longitude, this.length);
-                redisOutput.out(record,geoHash+"-"+d.getTime());
+                long index = hc.index(GeoUtil.scale2DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(), maxOrdinates));
+                redisOutput.out(record,String.valueOf(index));
 
                 count++;
 
@@ -82,17 +82,17 @@ public class RedisDataInsertion {
         }
 
         redisOutput.close();
-        logger.info("Totally {} documents have been inserted in Redis ",count);
+        logger.info("Totally {} records have been inserted in Redis ",count);
         logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
 
     }
 
-    public static RedisDataInsertion.Builder newRedisDataInsertion(String host, int port, String database,int batchSize, RecordParser parser, int length, boolean isCluster) throws Exception {
+    public static RedisDataInsertionHilbertCurve2D.Builder newRedisDataInsertion(String host, int port, String database, int batchSize, RecordParser parser, int bits, Rectangle space, boolean isCluster) throws Exception {
         if(isCluster){
-            return new RedisDataInsertion.Builder(new RedisClusterOutput(host, port, database,batchSize), parser, length);
+            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisClusterOutput(host, port, database,batchSize), parser, bits, space);
         }
         else{
-            return new RedisDataInsertion.Builder(new RedisInstanceOutput(host, port, database,batchSize), parser, length);
+            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisInstanceOutput(host, port, database,batchSize), parser, bits, space);
         }
 
     }
@@ -101,23 +101,27 @@ public class RedisDataInsertion {
 
         private final RecordParser parser;
         private final RedisOutput redisOutput;
-        private final int length;
 
         private Rectangle rectangle = null; // = Rectangle.newRectangle(-180, -90, 180, 90);
 
-        public Builder(RedisOutput redisOutput, RecordParser parser, int length) throws Exception {
+        private final int bits;
+        private final Rectangle space;
+
+        public Builder(RedisOutput redisOutput, RecordParser parser, int bits, Rectangle space) throws Exception {
             this.parser = parser;
-            this.length = length;
             this.redisOutput = redisOutput;
+
+            this.bits = bits;
+            this.space = space;
         }
 
-        public RedisDataInsertion.Builder filter(Rectangle rectangle) {
+        public RedisDataInsertionHilbertCurve2D.Builder filter(Rectangle rectangle) {
             this.rectangle = rectangle;
             return this;
         }
 
-        public RedisDataInsertion build() {
-            return new RedisDataInsertion(this);
+        public RedisDataInsertionHilbertCurve2D build() {
+            return new RedisDataInsertionHilbertCurve2D(this);
         }
     }
 

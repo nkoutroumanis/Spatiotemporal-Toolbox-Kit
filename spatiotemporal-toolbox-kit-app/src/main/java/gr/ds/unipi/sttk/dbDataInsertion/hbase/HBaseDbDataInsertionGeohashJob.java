@@ -4,7 +4,6 @@ import com.typesafe.config.Config;
 import gr.ds.unipi.stpin.Rectangle;
 import gr.ds.unipi.stpin.parsers.RecordParser;
 import gr.ds.unipi.sttk.AppConfig;
-import gr.ds.unipi.sttk.dbDataInsertion.redis.RedisDataInsertion;
 
 public class HBaseDbDataInsertionGeohashJob {
     public static void main(String args[]) throws Exception {
