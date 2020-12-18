@@ -78,10 +78,9 @@ public class HBaseDataInsertion {
             }
         }
 
-        hbaseOutput.close();
         logger.info("Totally {} documents have been inserted in HBase",count);
         logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
-
+        hbaseOutput.close();
     }
 
     public static HBaseDataInsertion.Builder newHBaseDataInsertion(String host, String table, int batchSize, RecordParser parser, int length) throws Exception {

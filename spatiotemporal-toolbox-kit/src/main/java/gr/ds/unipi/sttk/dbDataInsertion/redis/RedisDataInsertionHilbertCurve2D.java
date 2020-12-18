@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Function;
 
+import static java.lang.Math.pow;
+
 public class RedisDataInsertionHilbertCurve2D {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisDataInsertionHilbertCurve2D.class);
@@ -48,6 +50,8 @@ public class RedisDataInsertionHilbertCurve2D {
         long count = 0;
 
         SmallHilbertCurve hc = HilbertCurve.small().bits(bits).dimensions(2);
+        double digits = pow(2, bits*2);
+        int length = String.valueOf((long) digits).length();
 
         while (parser.hasNextRecord()) {
 
@@ -60,6 +64,11 @@ public class RedisDataInsertionHilbertCurve2D {
 
                 double longitude = Double.parseDouble(parser.getLongitude(record));
                 double latitude = Double.parseDouble(parser.getLatitude(record));
+                Date d = dateFunction.apply(record);
+
+                if(d == null){
+                    continue;
+                }
 
                 if(rectangle != null) {
                     //filtering
@@ -72,7 +81,8 @@ public class RedisDataInsertionHilbertCurve2D {
 //                redisOutput.out(record," ");
 
                 long index = hc.index(GeoUtil.scale2DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(), maxOrdinates));
-                redisOutput.out(record,String.valueOf(index));
+                redisOutput.out(record,String.format("%0"+length+"d", index)+":"+d.getTime());
+
 
                 count++;
 
