@@ -54,7 +54,6 @@ public class RedisDataInsertionHilbertCurve3D {
 
         SmallHilbertCurve sthc = HilbertCurve.small().bits(bits).dimensions(3);
 
-        SmallHilbertCurve sphc = HilbertCurve.small().bits(bits).dimensions(2);
         while (parser.hasNextRecord()) {
 
             try {
@@ -88,9 +87,7 @@ public class RedisDataInsertionHilbertCurve3D {
 
                 long stIndex = sthc.index(GeoUtil.scale3DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate.getTime(), maxDate.getTime(), maxOrdinates));
 
-                long spIndex = sphc.index(GeoUtil.scale2DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(), maxOrdinates));
-
-                redisOutput.out(record,String.valueOf(stIndex)+":"+String.valueOf(spIndex));
+                redisOutput.out(record,String.valueOf(stIndex));
 
                 count++;
 
