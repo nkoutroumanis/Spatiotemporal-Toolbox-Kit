@@ -16,7 +16,7 @@ public class RedisDbDataInsertionHilbertCurve3DJob {
         Config filter = config.getConfig("filter");
         Config space = redis.getConfig("space");
 
-        RedisDataInsertionHilbertCurve3D.Builder redisDataInsertion = RedisDataInsertionHilbertCurve3D.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")),redis.getString("minDate"), redis.getString("maxDate"), redis.getBoolean("cluster"));
+        RedisDataInsertionHilbertCurve3D.Builder redisDataInsertion = RedisDataInsertionHilbertCurve3D.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")),redis.getString("minDate"), redis.getString("maxDate"), redis.getBoolean("cluster"), redis.getBoolean("fieldIndexes"), redis.getBoolean("spatialIndex"));
 
         if(redis.getBoolean("filter")){
             redisDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));

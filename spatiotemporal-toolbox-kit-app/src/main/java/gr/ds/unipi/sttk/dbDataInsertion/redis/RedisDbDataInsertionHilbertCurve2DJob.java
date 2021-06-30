@@ -16,7 +16,7 @@ public class RedisDbDataInsertionHilbertCurve2DJob {
         Config filter = config.getConfig("filter");
         Config space = redis.getConfig("space");
 
-        RedisDataInsertionHilbertCurve2D.Builder redisDataInsertion = RedisDataInsertionHilbertCurve2D.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")), redis.getBoolean("cluster"));
+        RedisDataInsertionHilbertCurve2D.Builder redisDataInsertion = RedisDataInsertionHilbertCurve2D.newRedisDataInsertion(redis.getString("host"),redis.getInt("port"),redis.getString("database"), redis.getInt("batchSize"),recordParser, redis.getInt("bits"), Rectangle.newRectangle(space.getDouble("minLon"),space.getDouble("minLat"),space.getDouble("maxLon"),space.getDouble("maxLat")), redis.getBoolean("cluster"), redis.getBoolean("fieldIndexes"));
         if(redis.getBoolean("filter")){
             redisDataInsertion.filter(Rectangle.newRectangle(filter.getDouble("minLon"), filter.getDouble("minLat"), filter.getDouble("maxLon"), filter.getDouble("maxLat")));
         }

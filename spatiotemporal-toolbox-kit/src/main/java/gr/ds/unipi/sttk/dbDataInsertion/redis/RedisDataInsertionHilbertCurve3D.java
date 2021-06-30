@@ -32,6 +32,7 @@ public class RedisDataInsertionHilbertCurve3D {
     private final Rectangle space;
     private final Date minDate;
     private final Date maxDate;
+    private final boolean spatialIndex;
 
     private RedisDataInsertionHilbertCurve3D(RedisDataInsertionHilbertCurve3D.Builder builder) {
         parser = builder.parser;
@@ -44,6 +45,8 @@ public class RedisDataInsertionHilbertCurve3D {
 
         minDate = builder.minDate;
         maxDate = builder.maxDate;
+
+        spatialIndex= redisOutput.hasSpatialIndex();
     }
 
     public void insertDataOnRedis() throws Exception {
@@ -52,6 +55,7 @@ public class RedisDataInsertionHilbertCurve3D {
         long startTimeWindow = System.currentTimeMillis();
         long count = 0;
 
+        SmallHilbertCurve sphc = HilbertCurve.small().bits(bits).dimensions(2);
         SmallHilbertCurve sthc = HilbertCurve.small().bits(bits).dimensions(3);
 
         while (parser.hasNextRecord()) {
@@ -85,9 +89,14 @@ public class RedisDataInsertionHilbertCurve3D {
                 //forbaseline
 //                redisOutput.out(record," ");
 
+                String spIndex = "";
+                if(spatialIndex){
+                    spIndex = String.valueOf(sphc.index(GeoUtil.scale2DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(), maxOrdinates)));
+                }
+
                 long stIndex = sthc.index(GeoUtil.scale3DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(),d.getTime(),minDate.getTime(), maxDate.getTime(), maxOrdinates));
 
-                redisOutput.out(record,String.valueOf(stIndex));
+                redisOutput.out(record,spIndex + ":" + String.valueOf(stIndex));
 
                 count++;
 
@@ -99,15 +108,14 @@ public class RedisDataInsertionHilbertCurve3D {
         redisOutput.close();
         logger.info("Totally {} records have been inserted in Redis ",count);
         logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
-
     }
 
-    public static RedisDataInsertionHilbertCurve3D.Builder newRedisDataInsertion(String host, int port, String database, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate, boolean isCluster) throws Exception {
+    public static RedisDataInsertionHilbertCurve3D.Builder newRedisDataInsertion(String host, int port, String database, int batchSize, RecordParser parser, int bits, Rectangle space, String minDate, String maxDate, boolean isCluster, boolean indexes, boolean spatialIndex) throws Exception {
         if(isCluster){
-            return new RedisDataInsertionHilbertCurve3D.Builder(new RedisClusterOutput(host, port, database,batchSize), parser, bits, space, minDate, maxDate);
+            return new RedisDataInsertionHilbertCurve3D.Builder(new RedisClusterOutput(host, port, database,batchSize, indexes, spatialIndex, true), parser, bits, space, minDate, maxDate);
         }
         else{
-            return new RedisDataInsertionHilbertCurve3D.Builder(new RedisInstanceOutput(host, port, database,batchSize), parser, bits, space, minDate, maxDate);
+            return new RedisDataInsertionHilbertCurve3D.Builder(new RedisInstanceOutput(host, port, database,batchSize, indexes, spatialIndex,true), parser, bits, space, minDate, maxDate);
         }
 
     }

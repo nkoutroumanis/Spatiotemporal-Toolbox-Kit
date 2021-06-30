@@ -50,8 +50,8 @@ public class RedisDataInsertionHilbertCurve2D {
         long count = 0;
 
         SmallHilbertCurve hc = HilbertCurve.small().bits(bits).dimensions(2);
-        double digits = pow(2, bits*2);
-        int length = String.valueOf((long) digits).length();
+        //double digits = pow(2, bits*2);
+        //int length = String.valueOf((long) digits).length();
 
         while (parser.hasNextRecord()) {
 
@@ -81,8 +81,7 @@ public class RedisDataInsertionHilbertCurve2D {
 //                redisOutput.out(record," ");
 
                 long index = hc.index(GeoUtil.scale2DPoint(longitude,space.getMinx(),space.getMaxx(),latitude,space.getMiny(),space.getMaxy(), maxOrdinates));
-                redisOutput.out(record,String.format("%0"+length+"d", index)+":"+d.getTime());
-
+                redisOutput.out(record,String.valueOf(index)+":");
 
                 count++;
 
@@ -94,17 +93,15 @@ public class RedisDataInsertionHilbertCurve2D {
         redisOutput.close();
         logger.info("Totally {} records have been inserted in Redis ",count);
         logger.info("Elapsed time {}", (System.currentTimeMillis() - startTimeWindow) / 1000 + " sec");
-
     }
 
-    public static RedisDataInsertionHilbertCurve2D.Builder newRedisDataInsertion(String host, int port, String database, int batchSize, RecordParser parser, int bits, Rectangle space, boolean isCluster) throws Exception {
+    public static RedisDataInsertionHilbertCurve2D.Builder newRedisDataInsertion(String host, int port, String database, int batchSize, RecordParser parser, int bits, Rectangle space, boolean isCluster, boolean indexes) throws Exception {
         if(isCluster){
-            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisClusterOutput(host, port, database,batchSize), parser, bits, space);
+            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisClusterOutput(host, port, database,batchSize, indexes,true,false), parser, bits, space);
         }
         else{
-            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisInstanceOutput(host, port, database,batchSize), parser, bits, space);
+            return new RedisDataInsertionHilbertCurve2D.Builder(new RedisInstanceOutput(host, port, database,batchSize, indexes,true,false), parser, bits, space);
         }
-
     }
 
     public static class Builder {
@@ -116,6 +113,7 @@ public class RedisDataInsertionHilbertCurve2D {
 
         private final int bits;
         private final Rectangle space;
+        private final boolean indexes = false;
 
         public Builder(RedisOutput redisOutput, RecordParser parser, int bits, Rectangle space) throws Exception {
             this.parser = parser;
